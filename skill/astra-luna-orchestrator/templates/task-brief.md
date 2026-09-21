@@ -1,7 +1,7 @@
 # <Task ID>: <Reviewable deliverable>
 
 ## Assignment
-Executor: astra_flash_builder
+Executor: astra_luna_builder
 Phase: <phase ID>
 Workspace: <exact path verified by Astra>
 Baseline: <branch/commit plus pre-existing changes, or explicit non-Git snapshot>
@@ -23,7 +23,7 @@ Report/checkpoint path: <unique task-owned path>
 May change: <literal files/directories, including this task's tests/report.>
 Must not change: <other worker scopes and unrelated user work.>
 Default exclusions: secrets/.env files, production config, undeclared dependencies
-or lockfiles, CI, unrelated migrations, router/Codex configuration, and .git internals.
+or lockfiles, CI, unrelated migrations, provider/Codex configuration, and .git internals.
 Explicit exceptions: <none, or the exact user-authorized exception.>
 
 ## Implementation freedom

@@ -1,12 +1,12 @@
 # GitHub release preparation
 
-Suggested repository name: **astra-flash-orchestrator**
+Suggested repository name: **astra-luna-orchestrator**
 
 Suggested GitHub description:
 
-> Astra plans and reviews; DeepSeek Flash builds. A native Codex workflow with phased tasks, verification, safe installation and reversible setup.
+> Astra plans and reviews; GPT-5.6 Luna builds. A native Codex workflow with phased tasks, verification, safe installation and reversible setup.
 
-Suggested topics: `codex`, `codex-skills`, `deepseek`, `ai-agents`, `developer-tools`, `agent-orchestration`.
+Suggested topics: `codex`, `codex-skills`, `openai`, `ai-agents`, `developer-tools`, `agent-orchestration`.
 
 ## Before publishing
 
@@ -22,4 +22,4 @@ Build an archive with `python3 -B scripts/release.py --zip`. The command refuses
 
 ## Installation evidence
 
-A release should distinguish offline tests, static configuration checks, local endpoint checks and actual delegated task evidence. Never turn test totals or a successful catalog response into a claim that real model routing has been proven.
+A release should distinguish offline tests, static configuration checks and actual delegated task evidence. Never turn test totals into a claim that real model selection or delegation has been proven.

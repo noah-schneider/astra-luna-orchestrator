@@ -37,14 +37,14 @@
 ## 1.1.0 — Thin-root orchestration by default
 
 - Keep Astra to a planning batch, one worker dispatch/wait, one batched acceptance review and the final response for normal phases.
-- Make Flash responsible for in-scope repository discovery, implementation, testing, debugging and routine browser/visual QA.
+- Make Luna responsible for in-scope repository discovery, implementation, testing, debugging and routine browser/visual QA.
 - Remove progress polling, duplicate root investigation and ritual full-suite reruns from the default workflow.
 - Consolidate review findings into one correction request and one default correction cycle.
 - Retain additional Astra investigation and verification for concrete high-assurance risks.
 
 ## 1.0.2 — Native delegation readiness
 
-- Refuse installation when Flash is present but not advertised for native subagents.
+- Refuse installation when Luna is present but not advertised for native subagents.
 - Explain full host-app restart, cached catalogs, and Router commands that can trigger paid verification.
 - Distinguish local route selection from runtime capability evidence.
 
@@ -59,5 +59,5 @@
 
 ## 1.0.0 — Initial package
 
-- Native Flash builder role, Astra orchestration skill, scoped personal policy, dry run and guarded undo.
+- Native Luna builder role, Astra orchestration skill, scoped personal policy, dry run and guarded undo.
 - Offline installation tests, configuration doctor, task templates and optional plan validator.

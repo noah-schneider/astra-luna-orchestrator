@@ -2,12 +2,12 @@
 
 ## Default: one native writer, no extra harness
 
-The default is one native Flash child in the current workspace for one coherent
+The default is one native Luna child in the current workspace for one coherent
 end-to-end phase bundle. Astra supplies the contract, dispatches once, waits, and
 reviews one completion report. The worker owns in-scope repository discovery,
 implementation, tests, debugging, and routine browser/visual QA. This avoids a
 second CLI process, environment-variable command string, automatic commits, and
-accidental provider bypass. No `FLASH_WORKER_CMD` or external run_worker.sh is needed.
+accidental provider bypass. No external worker command is needed.
 
 Before editing, capture the workspace root, current branch/HEAD when Git exists,
 tracked/staged diff and untracked-file inventory. Preserve relevant pre-existing
@@ -29,7 +29,7 @@ hard filesystem access controls: inherited host permissions remain authoritative
 
 ## Optional: two genuinely independent writers
 
-Parallelism is opt-in per plan. Use at most two Flash writers by default, and only
+Parallelism is opt-in per plan. Use at most two Luna writers by default, and only
 when their dependencies are satisfied, writable scopes do not overlap, and
 separate workspaces are actually available. A separate agent thread alone does
 not satisfy workspace isolation. Shared types, dependency manifests/lockfiles,
@@ -72,4 +72,4 @@ accepted dependencies; broaden further only for a material high-assurance risk.
 No automatic commits, staging, branch merges, pushing, deployment, publishing,
 or production migrations are included in this workflow. Execute such operations
 only under the user's applicable authorization and after actual review. A build
-request by itself is not a reason to edit global router settings mid-project.
+request by itself is not a reason to edit global provider settings mid-project.

@@ -20,7 +20,7 @@ Thread ID: <host-observed ID, if available>
 Spec compliance: <pass | changes requested | blocked, with evidence>
 Code quality/security: <pass | changes requested | blocked, with evidence>
 Independent verification: <actual commands or visual/runtime checks>
-Routing evidence: <host/router metadata, not a worker self-identification>
+Model evidence: <host/session metadata, not a worker self-identification>
 Decision: <accepted | changes requested | blocked>
 Correction cycles: <count>
 Integration status: <what is present in the dependent workspace>

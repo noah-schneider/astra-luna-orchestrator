@@ -5,32 +5,28 @@ with Python 3.14.3.
 
 ## Verified
 
-- 63 offline tests passed. Coverage includes installation dry runs, idempotence,
+- 64 offline tests passed. Coverage includes installation dry runs, idempotence,
   original configuration preservation, scoped policy handling,
-  profile/collision/symlink checks, URL validation, fake-secret redaction,
+  profile/collision/symlink checks, fake-secret redaction,
   generated role TOML, rollback, guarded undo, plan validation and release-file
   filtering.
-- Every documented V4.1 Flash route is accepted only when explicitly selected or
-  preserved from an existing valid package binding and advertised as
-  `multi_agent_version: "v2"`. Tests cover OpenRouter role generation, remembered
-  update behavior, unreviewed-route rejection, uncertified-route rejection and
-  refusal to fall back from direct DeepSeek to an available alternate provider.
-- Native `/v1` and capability-path Router configurations are accepted; non-loopback hosts and unsupported URL shapes are rejected.
+- The generated native role pins GPT-5.6 Luna at `xhigh` and leaves global child
+  defaults, root settings and `config.toml` unchanged.
 - Existing backup-directory permissions are preserved.
 - Backup files and caches are excluded from skill installation. Release tests also cover private artifact exclusion, symlink rejection and inventory changes.
 
-All tests use synthetic configuration, temporary directories and a local HTTP fixture. They do not require a provider account or invoke model inference. Python 3.11 is the minimum supported syntax/runtime target, but this release's local suite was run on 3.14.3; other versions and operating systems have not been tested here.
+All tests use synthetic configuration and temporary directories. They do not require a provider account or invoke model inference. Python 3.11 is the minimum supported syntax/runtime target, but this release's local suite was run on 3.14.3; other versions and operating systems have not been tested here.
 
 ## Prior local installation evidence
 
-The preceding package revision was installed in a macOS Codex setup using an Astra root and the exact Flash worker route. Static configuration checks passed; root configuration and authentication bytes were preserved. Its optional unauthenticated local catalog GET was rejected. The public revision's installer is verified with synthetic homes; this report does not claim it was reapplied to that real installation.
+The preceding package revision was installed in a macOS Codex setup using an Astra root and a native worker role. Static configuration checks passed; root configuration and authentication bytes were preserved. The public revision's installer is verified with synthetic homes; this report does not claim it was reapplied to that real installation.
 
 ## Still unverified
 
-Actual delegated inference through the newly supported alternate providers,
-native role loading for those routes in a fresh session, provider request
-attribution, long-running build quality and cost savings remain unverified for
-this candidate. A static report, a model catalog entry, or a worker naming itself
-cannot establish these facts.
+Actual delegated inference, native role loading in a fresh session, long-running
+build quality and cost savings remain unverified for this candidate. A static
+report or a worker naming itself cannot establish these facts.
 
-Validate real routing during the first authorized useful task, using host/router request metadata. Do not run an extra paid test as part of installation, and do not publish raw private logs or local configuration as evidence.
+Validate real model selection during the first authorized useful task, using
+host/session metadata. Do not run an extra paid test as part of installation, and
+do not publish raw private logs or local configuration as evidence.
