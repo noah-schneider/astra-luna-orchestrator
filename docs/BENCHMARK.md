@@ -1,6 +1,6 @@
 # Benchmark
 
-Values remain placeholders until Astra + GPT-5.6 Luna is measured.
+Values remain placeholders until Astra + GPT-6 Luna is measured.
 
 | Metric | Result |
 | --- | ---: |

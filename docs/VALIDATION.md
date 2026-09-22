@@ -1,21 +1,26 @@
 # Validation evidence
 
-Unreleased candidate based on version 1.2.0. Checked September 20, 2026 on macOS
-with Python 3.14.3.
+Unreleased candidate based on version 1.2.0. Checked September 22, 2026 on
+Windows with Python 3.14.7.
 
 ## Verified
 
-- 64 offline tests passed. Coverage includes installation dry runs, idempotence,
+- 48 offline tests passed. Coverage includes installation dry runs, idempotence,
   original configuration preservation, scoped policy handling,
   profile/collision/symlink checks, fake-secret redaction,
   generated role TOML, rollback, guarded undo, plan validation and release-file
   filtering.
-- The generated native role pins GPT-5.6 Luna at `xhigh` and leaves global child
+- The generated native roles pin GPT-6 Luna at `xhigh` and GPT-6 Sol at `high`,
+  and leave global child
   defaults, root settings and `config.toml` unchanged.
 - Existing backup-directory permissions are preserved.
 - Backup files and caches are excluded from skill installation. Release tests also cover private artifact exclusion, symlink rejection and inventory changes.
 
-All tests use synthetic configuration and temporary directories. They do not require a provider account or invoke model inference. Python 3.11 is the minimum supported syntax/runtime target, but this release's local suite was run on 3.14.3; other versions and operating systems have not been tested here.
+Both skill entrypoints passed a local frontmatter check. The Luna example and a
+converted Sol plan passed their respective structure validators. The skill-creator
+validator could not run because this Python environment lacks PyYAML.
+
+All tests use synthetic configuration and temporary directories. They do not require a provider account or invoke model inference. Python 3.11 is the minimum supported syntax/runtime target, but this release's local suite was run on 3.14.7; other versions and operating systems have not been tested here.
 
 ## Prior local installation evidence
 

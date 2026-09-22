@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Pin the Luna worker to GPT-6 Luna and add a separate Astra/Sol skill and
+  native builder role pinned to GPT-6 Sol at high. Install and undo both together.
+- Allow static installation while a worker model is selected as root; keep
+  delegation blocked until an Astra root is selected.
 - Support explicit, reviewed DeepSeek V4.1 Flash routes through OpenRouter,
   opencode Go, Command Code, Nous Research and Ollama Cloud while retaining the
   direct DeepSeek API as the default. Existing alternate-route installations

@@ -1,9 +1,9 @@
 ---
-name: astra-luna-orchestrator
-description: Plan and execute substantial multi-file builds, features, migrations, and refactors with Astra as orchestrator and GPT-6 Luna as the native Codex implementation worker. Use for phased planning and delegated build execution, including existing Superpowers or GSD plans. Skip trivial edits and explicitly single-agent tasks. Worker children must not invoke this orchestration skill.
+name: astra-sol-orchestrator
+description: Plan and execute substantial multi-file builds, features, migrations, and refactors with Astra as orchestrator and GPT-6 Sol at high as the native Codex implementation worker. Use when the user requests Sol for phased planning and delegated build execution, including existing Superpowers or GSD plans. Skip trivial edits and explicitly single-agent tasks. Worker children must not invoke this orchestration skill.
 ---
 
-# Astra plans. Luna implements. Astra accepts.
+# Astra plans. Sol implements. Astra accepts.
 
 Use native Codex subagents, not a second agent CLI or API client. This skill
 provides the workflow; the custom agent pins the worker model. Do not claim
@@ -17,7 +17,7 @@ more Astra-active revisions; it is not one option in a mode menu.
 
 Keep Astra focused on decisions where its judgment has the highest leverage:
 architecture, acceptance criteria, material risk, and final acceptance. After the
-contract is ready, Luna owns repository discovery needed within the brief,
+contract is ready, Sol owns repository discovery needed within the brief,
 implementation, testing, debugging, and routine browser/visual QA.
 
 For a normal phase, target this root workflow: one planning batch, one dispatch to
@@ -32,7 +32,7 @@ Read the relevant repository guidance and current request. Preserve existing
 work. Decide whether this is a direct small fix, a bounded build, or a large
 multi-phase project. Keep trivial edits with Astra; do not force delegation onto
 a typo or a simple question. For a substantial build, say what Astra will own
-and what Luna will implement. These routing decisions are not alternate modes.
+and what Sol will implement. These routing decisions are not alternate modes.
 
 Use the user's existing approvals and decisions. An explicit request to plan and
 build authorizes the in-scope workflow; it is not necessary to ask again after
@@ -45,7 +45,7 @@ Read `references/routing.md`. Run the read-only `scripts/doctor.py` with the
 same CODEX_HOME/profile used by the session. Its output is a static configuration
 check, not an end-to-end model test.
 Confirm the current ROOT is the user's selected GPT-6 Astra and that the native
-`astra_luna_builder` role is available. Do not change the root model or effort.
+`astra_sol_builder` role is available. Do not change the root model or effort.
 Inspect project/CLI/UI/managed overrides that the doctor cannot resolve.
 
 For an already-verified setup, reuse the verified configuration evidence rather
@@ -67,7 +67,7 @@ non-goals, repo evidence, important alternatives, interfaces, failure behavior,
 risks, and acceptance criteria. Put stable shared contracts ahead of dependent
 implementation. Astra makes architecture, auth/security, tenancy, payments,
 secrets, and production-impacting decisions; do not hand those decisions to
-Luna under a vague "build it" prompt.
+Sol under a vague "build it" prompt.
 
 ## 4. Produce a phase plan and executable briefs
 
@@ -75,10 +75,10 @@ Default artifact home: `docs/agent-work/<feature>/`. Follow an existing project
 convention instead when one is established. Use the templates as needed.
 
 Write a dependency-ordered phase plan. Prefer one coherent end-to-end vertical
-bundle per phase when its contract is stable. Each Luna assignment has exact
+bundle per phase when its contract is stable. Each Sol assignment has exact
 contracts, a bounded file scope, testable outcomes, and verification commands.
 Internal discovery, implementation, testing, debugging, and routine UI validation
-stay with Luna; Astra does not write the entire implementation in the plan. Long
+stay with Sol; Astra does not write the entire implementation in the plan. Long
 work is welcome inside a clear contract, not across unknown architecture boundaries.
 
 Separate tasks only at genuine dependency or independent acceptance boundaries,
@@ -93,7 +93,7 @@ That linter checks structure, not the truth or quality of the design.
 ## 5. Dispatch and let the worker work
 
 Read `references/execution.md`. Use the host's actual native delegation tool with
-the installed `astra_luna_builder` role. Do not invent a slash command or tool
+the installed `astra_sol_builder` role. Do not invent a slash command or tool
 signature. If the tool exposes explicit model selection, use the exact installed
 worker slug. Do not use a default explorer/reviewer role that could override it.
 
@@ -103,7 +103,7 @@ Prefer a clean child context where the host supports it; never claim its context
 is empty if the host actually inherits history. No unnecessary full-transcript
 forking, duplicate repository investigation, or play-by-play log forwarding.
 
-Default to ONE active Luna writer in the current workspace. A native subagent
+Default to ONE active Sol writer in the current workspace. A native subagent
 is not automatically a Git worktree or a security sandbox. Astra must not edit
 its claimed paths. Use two writers only when the plan explicitly identifies
 independent work and each has a real, verified separate workspace. See execution
@@ -130,7 +130,7 @@ code quality/security. Inspect the actual diff and the worker's evidence. Perfor
 targeted spot checks where evidence is missing, a failure is plausible, or the risk
 justifies independent confirmation. Do not routinely rerun the worker's complete
 test suite or repeat visual QA that has adequate artifacts. Default reviewer
-subagents would also route to Luna, so do not mistake a default child for an
+subagents would also route to Sol, so do not mistake a default child for an
 independent Astra review.
 
 Accept only after both lenses and relevant verification succeed. If corrections

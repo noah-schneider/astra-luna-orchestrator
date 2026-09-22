@@ -1,23 +1,27 @@
-# Astra Luna Orchestrator
+# Astra Worker Orchestrators
 
-**Save Astra for the decisions that need it. Let GPT-5.6 Luna do the volume.**
+**Save Astra for the decisions that need it. Let GPT-6 Luna or GPT-6 Sol do the volume.**
 
-![Astra + GPT-5.6 Luna savings placeholders](docs/assets/astra-savings-v2.svg)
+![Astra + GPT-6 Luna savings placeholders](docs/assets/astra-savings-v2.svg)
 
-A personal Codex skill designed to preserve Astra usage without giving up Astra's
+A pair of personal Codex skills designed to preserve Astra usage without giving up Astra's
 judgment. Astra stays responsible for planning, architecture, high-stakes
-decisions and final review. GPT-5.6 Luna takes the high-volume work:
+decisions and final review. The selected worker takes the high-volume work:
 repository discovery, implementation, testing, debugging and routine verification.
 
+Invoke `$astra-luna-orchestrator` for `gpt-6-luna` at `xhigh`, or
+`$astra-sol-orchestrator` for `gpt-6-sol` at `high`. Each skill has a distinct
+native builder role; the installer installs both.
+
 Bring an existing plan or start with a feature request. The workflow turns it
-into coherent implementation bundles, sends those bundles to Luna, then returns
+into coherent implementation bundles, sends those bundles to the selected worker, then returns
 the completed patch and evidence to Astra for one focused acceptance pass.
 
-> **Status:** early release. Offline installation tests pass. Astra + GPT-5.6 Luna savings remain `???` until measured. A new installation still needs runtime model-selection verification on its first authorized task. Installation never runs paid inference.
+> **Status:** early release. Offline installation tests pass. Astra + GPT-6 Luna savings remain `???` until measured. A new installation still needs runtime model-selection verification on its first authorized task. Installation never runs paid inference.
 
 ## Savings
 
-| Metric | Astra + GPT-5.6 Luna |
+| Metric | Astra + GPT-6 Luna |
 | --- | ---: |
 | Savings | **???** |
 | Quality | **???** |
@@ -30,16 +34,16 @@ Replace the placeholders after measuring. See the [benchmark](docs/BENCHMARK.md)
 
 ```text
 Astra  →  scope + design + task brief
-Luna  →  implement + test + report
+Worker →  implement + test + report
 Astra  →  review + verify + accept or request fixes
        →  integrate + checkpoint + next task
 ```
 
-- **Native delegation:** uses the `astra_luna_builder` role, not a separate agent CLI.
+- **Native delegation:** uses `astra_luna_builder` or `astra_sol_builder`, according to the invoked skill.
 - **Coherent assignments:** one feature slice can include many edit/test/fix steps.
 - **Focused Astra root:** normally one planning batch, one dispatch, one wait, one
   batched acceptance review and one final response.
-- **Worker-owned execution:** Luna handles in-scope discovery, implementation,
+- **Worker-owned execution:** the selected worker handles in-scope discovery, implementation,
   testing, debugging and routine browser/visual QA without progress polling.
 - **Review before acceptance:** the builder submits evidence; Astra decides whether it is complete.
 - **Existing plans welcome:** works with repository plans, Superpowers/GSD artifacts, or the included templates.
@@ -51,11 +55,11 @@ This is workflow guidance, not a deterministic scheduler, a security sandbox, or
 ### One orchestration workflow
 
 There is no mode setting or mode-switch command. The package always uses the
-usage-saving Astra → Luna → Astra workflow for substantial implementation.
+usage-saving Astra → worker → Astra workflow for substantial implementation.
 
 Three routing outcomes remain intentionally different:
 
-- Substantial implementation uses Astra to plan and review while Luna builds.
+- Substantial implementation uses Astra to plan and review while the selected worker builds.
 - Trivial work and explicit single-agent requests stay with the root session.
 - Concrete security, architecture, payments, tenancy, secrets, migration or
   production risk can justify targeted additional Astra review.
@@ -67,17 +71,17 @@ Those are scope and safety decisions, not user-selectable performance modes.
 Before installing, you need:
 
 1. A Codex client that supports native subagents and standalone custom agent TOML files under `$CODEX_HOME/agents/`.
-2. GPT-6 Astra selected as the root model.
+2. GPT-6 Astra selected as the root model before delegated use. Installation may run while another root model is configured.
 3. Python **3.11 or newer**. No third-party Python dependencies are needed.
-4. Native OpenAI access to `gpt-5.6-luna` and native subagent support.
+4. Native OpenAI access to the model of the skill you invoke (`gpt-6-luna` or `gpt-6-sol`) and native subagent support.
 
-The installer pins the personal role directly to the native Codex model. It does
+The installer pins each personal role directly to its native Codex model. It does
 not ask for, read, store or validate API keys, and it never runs model requests.
 Do not paste credentials into assistant chat.
 
 Do **not** add or change `[agents].default_subagent_model` for this package. The
-installer creates a named `astra_luna_builder` role that pins `gpt-5.6-luna` at
-`xhigh`, so unrelated subagents keep their existing defaults. The installer does
+installer creates named roles that pin `gpt-6-luna` at `xhigh` and `gpt-6-sol`
+at `high`, so unrelated subagents keep their existing defaults. The installer does
 not select your root model or rewrite `config.toml`.
 
 ## Install
@@ -132,7 +136,9 @@ For a nondefault profile, pass `--profile PROFILE` to the dry run, apply and doc
 | Location | Installed content |
 | --- | --- |
 | `~/.agents/skills/astra-luna-orchestrator/` | Skill, references, templates, doctor and plan validator |
-| `$CODEX_HOME/agents/astra_luna_builder.toml` | Native builder pinned to GPT-5.6 Luna at xhigh; nested agents disabled |
+| `$CODEX_HOME/agents/astra_luna_builder.toml` | Native builder pinned to GPT-6 Luna at xhigh; nested agents disabled |
+| `~/.agents/skills/astra-sol-orchestrator/` | Sol skill with its own references, templates, doctor and plan validator |
+| `$CODEX_HOME/agents/astra_sol_builder.toml` | Native builder pinned to GPT-6 Sol at high; nested agents disabled |
 | `$CODEX_HOME/AGENTS.md` | A marked, scoped workflow policy block |
 | `$CODEX_HOME/astra-luna-install-backups/` | Original files and an undo receipt |
 
@@ -153,6 +159,9 @@ the worker; review its completed patch and evidence in one batched pass.
 
 Replace the example plan path with your actual plan or describe the feature. Your first authorized useful task should verify the child model and effort using host session metadata. A worker saying its model name is not proof.
 
+For the Sol worker, invoke `$astra-sol-orchestrator` and use its installed
+`astra_sol_builder` role.
+
 If the session does not expose the custom role or exact worker model, do not substitute another model or launch a second CLI. Check client support and session configuration first.
 
 ## Check your setup
@@ -161,6 +170,7 @@ From the repository folder:
 
 ```sh
 python3 -B skill/astra-luna-orchestrator/scripts/doctor.py
+python3 -B skill/astra-sol-orchestrator/scripts/doctor.py
 ```
 
 The static check verifies the effective config shape, root settings and native

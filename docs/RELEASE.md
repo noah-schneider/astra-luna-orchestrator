@@ -4,7 +4,7 @@ Suggested repository name: **astra-luna-orchestrator**
 
 Suggested GitHub description:
 
-> Astra plans and reviews; GPT-5.6 Luna builds. A native Codex workflow with phased tasks, verification, safe installation and reversible setup.
+> Astra plans and reviews; GPT-6 Luna or GPT-6 Sol builds. Native Codex workflows with phased tasks, verification, safe installation and reversible setup.
 
 Suggested topics: `codex`, `codex-skills`, `openai`, `ai-agents`, `developer-tools`, `agent-orchestration`.
 

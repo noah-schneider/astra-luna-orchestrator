@@ -72,6 +72,10 @@ class SetupFixture(unittest.TestCase):
         self.assertFalse(role['agents']['enabled'])
         self.assertNotIn('sandbox_mode', role)
         self.assertNotIn('model_provider', role)
+        sol_role = tomllib.loads((self.codex / 'agents' / f'{install.SOL_ROLE}.toml').read_text())
+        self.assertEqual((sol_role['model'], sol_role['model_reasoning_effort']), ('gpt-6-sol', 'high'))
+        self.assertFalse(sol_role['agents']['enabled'])
+        self.assertTrue((self.home / '.agents' / 'skills' / install.SOL_SKILL / 'SKILL.md').is_file())
         self.assertIn('No model request was made', result.stdout)
 
     def test_planned_writes_never_include_config(self):
@@ -126,8 +130,22 @@ class SetupFixture(unittest.TestCase):
 
     def test_luna_root_is_rejected(self):
         self.config.write_text(self.config.read_text().replace('fixture-astra-root', WORKER_MODEL))
-        with self.assertRaisesRegex(SetupError, 'root model is GPT-5.6 Luna'):
+        with self.assertRaisesRegex(SetupError, 'root model is a worker model'):
             inspect(self.home, self.codex)
+
+    def test_sol_root_is_rejected(self):
+        self.config.write_text(self.config.read_text().replace('fixture-astra-root', 'gpt-6-sol'))
+        with self.assertRaisesRegex(SetupError, 'root model is a worker model'):
+            inspect(self.home, self.codex)
+
+    def test_install_with_sol_root_preserves_root_and_warns(self):
+        self.config.write_text(self.config.read_text().replace('fixture-astra-root', 'gpt-6-sol'))
+        original = self.config.read_bytes()
+        result = self.cli('--apply')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.config.read_bytes(), original)
+        self.assertIn('select Astra before delegating', result.stdout)
+        self.assertTrue((self.codex / 'agents' / f'{install.SOL_ROLE}.toml').exists())
 
     def test_existing_backup_directory_permissions_preserved(self):
         backup = self.codex / 'astra-luna-install-backups'
@@ -259,6 +277,8 @@ class SetupFixture(unittest.TestCase):
         self.assertEqual(self.config.read_bytes(), self.original_config)
         self.assertFalse((self.codex / 'agents' / f'{ROLE}.toml').exists())
         self.assertFalse((self.home / '.agents' / 'skills' / SKILL).exists())
+        self.assertFalse((self.codex / 'agents' / f'{install.SOL_ROLE}.toml').exists())
+        self.assertFalse((self.home / '.agents' / 'skills' / install.SOL_SKILL).exists())
 
     def test_undo_preserves_subsequent_user_edits_by_refusing(self):
         receipt = self.apply()

@@ -17,8 +17,14 @@ if sys.version_info < (3, 11):
 sys.dont_write_bytecode = True
 BUNDLE = Path(__file__).resolve().parent
 SKILL_SOURCE = BUNDLE / "skill" / "astra-luna-orchestrator"
+SOL_SOURCE = BUNDLE / "skill" / "astra-sol-orchestrator"
 sys.path.insert(0, str(SKILL_SOURCE / "scripts"))
 from local_config import SetupError, default_locations, inspect, ROLE, SKILL
+
+SOL_ROLE = "astra_sol_builder"
+SOL_SKILL = "astra-sol-orchestrator"
+SOL_MODEL = "gpt-6-sol"
+SOL_EFFORT = "high"
 
 BEGIN = b"<!-- BEGIN astra-luna-orchestrator managed policy -->"
 END = b"<!-- END astra-luna-orchestrator managed policy -->"
@@ -76,33 +82,34 @@ def atomic_write(path: Path, data: bytes, mode: int = 0o600) -> None:
 
 
 def plan_changes(home: Path, codex_home: Path, report: dict, with_policy: bool, replace: bool) -> list[dict]:
-    target = home / ".agents" / "skills" / SKILL
-    role_path = codex_home / "agents" / f"{ROLE}.toml"
-    no_symlinks(target)
-    # Detect a second copy instead of silently creating duplicate skill activations.
-    legacy = codex_home / "skills" / SKILL
-    if legacy.exists():
-        raise SetupError(f"An existing same-named skill is at {legacy}. Reconcile duplicate locations first.")
     requested: dict[Path, bytes] = {}
-    for source in sorted(SKILL_SOURCE.rglob("*")):
-        if source.is_symlink():
-            raise SetupError("The bundle contains an unexpected symlink.")
-        if (source.is_file() and "__pycache__" not in source.parts
-                and source.suffix not in {".pyc", ".pyo", ".bak"}
-                and ".before-" not in source.name and source.name != ".DS_Store"):
-            requested[target / source.relative_to(SKILL_SOURCE)] = source.read_bytes()
     instructions = (BUNDLE / "WORKER-INSTRUCTIONS.md").read_text(encoding="utf-8").strip()
-    # JSON basic strings are valid TOML basic strings for these generated values.
-    role = (
-        f'name = {json.dumps(ROLE)}\n'
-        'description = "Implement an Astra-approved task bundle using native GPT-5.6 Luna; never orchestrate or self-approve."\n'
-        f'model = {json.dumps(report["worker_model"])}\n'
-    )
-    if report["worker_effort"]:
-        role += f'model_reasoning_effort = {json.dumps(report["worker_effort"])}\n'
-    role += f'developer_instructions = {json.dumps(instructions, ensure_ascii=False)}\n\n'
-    role += '# Inherit the parent sandbox/approvals. Prevent recursive subagent spawning.\n[agents]\nenabled = false\n'
-    requested[role_path] = role.encode()
+    for skill, source_root, role_name, model, effort, label in (
+        (SKILL, SKILL_SOURCE, ROLE, report["worker_model"], report["worker_effort"], "Luna"),
+        (SOL_SKILL, SOL_SOURCE, SOL_ROLE, SOL_MODEL, SOL_EFFORT, "Sol"),
+    ):
+        target = home / ".agents" / "skills" / skill
+        no_symlinks(target)
+        legacy = codex_home / "skills" / skill
+        if legacy.exists():
+            raise SetupError(f"An existing same-named skill is at {legacy}. Reconcile duplicate locations first.")
+        for source in sorted(source_root.rglob("*")):
+            if source.is_symlink():
+                raise SetupError("The bundle contains an unexpected symlink.")
+            if (source.is_file() and "__pycache__" not in source.parts
+                    and source.suffix not in {".pyc", ".pyo", ".bak"}
+                    and ".before-" not in source.name and source.name != ".DS_Store"):
+                requested[target / source.relative_to(source_root)] = source.read_bytes()
+        # JSON basic strings are valid TOML basic strings for these generated values.
+        role = (
+            f'name = {json.dumps(role_name)}\n'
+            f'description = "Implement an Astra-approved task bundle using native GPT-6 {label}; never orchestrate or self-approve."\n'
+            f'model = {json.dumps(model)}\n'
+            f'model_reasoning_effort = {json.dumps(effort)}\n'
+            f'developer_instructions = {json.dumps(instructions, ensure_ascii=False)}\n\n'
+            '# Inherit the parent sandbox/approvals. Prevent recursive subagent spawning.\n[agents]\nenabled = false\n'
+        )
+        requested[codex_home / "agents" / f"{role_name}.toml"] = role.encode()
     policy_path = None
     if with_policy:
         override = codex_home / "AGENTS.override.md"
@@ -169,12 +176,13 @@ def undo(receipt: Path, home: Path, codex_home: Path, apply: bool) -> None:
     record = json.loads(receipt.read_text())
     if record.get("format") != 1 or record.get("status") != "installed":
         raise SetupError("This receipt does not describe an installed, undoable transaction.")
-    root = home / ".agents" / "skills" / SKILL
-    fixed = {codex_home / "agents" / f"{ROLE}.toml", codex_home / "AGENTS.md", codex_home / "AGENTS.override.md"}
+    roots = [home / ".agents" / "skills" / name for name in (SKILL, SOL_SKILL)]
+    fixed = {codex_home / "agents" / f"{name}.toml" for name in (ROLE, SOL_ROLE)}
+    fixed.update({codex_home / "AGENTS.md", codex_home / "AGENTS.override.md"})
     pending = []
     for entry in record["files"]:
         path = Path(entry["path"])
-        if not path.is_absolute() or ".." in path.parts or (path not in fixed and not path.resolve().is_relative_to(root.resolve())):
+        if not path.is_absolute() or ".." in path.parts or (path not in fixed and not any(path.resolve().is_relative_to(root.resolve()) for root in roots)):
             raise SetupError("The receipt contains a target outside this package's installation paths.")
         current = contents(path)
         if digest(current) != entry["after_hash"]:
@@ -198,7 +206,9 @@ def undo(receipt: Path, home: Path, codex_home: Path, apply: bool) -> None:
     if apply:
         record["status"] = "restored"
         atomic_write(receipt, (json.dumps(record, indent=2) + "\n").encode())
-        if root.exists():
+        for root in roots:
+            if not root.exists():
+                continue
             for directory in sorted((p for p in root.rglob("*") if p.is_dir()), key=lambda p: len(p.parts), reverse=True):
                 try:
                     directory.rmdir()
@@ -227,7 +237,8 @@ def main() -> int:
         if args.undo:
             undo(args.undo, home, codex_home, args.apply)
             return 0
-        report = inspect(home, codex_home, args.profile)
+        report = inspect(home, codex_home, args.profile, allow_worker_root=True)
+        report["additional_worker"] = {"custom_agent": SOL_ROLE, "worker_model": SOL_MODEL, "worker_effort": SOL_EFFORT}
         changes = plan_changes(home, codex_home, report, not args.no_policy, args.replace)
         print(json.dumps(report, indent=2))
         for change in changes:

@@ -2,7 +2,7 @@
 
 ## The skill is missing
 
-Check that installation ended with `Installed` or `Already installed`, not only a successful dry run. The expected file is `~/.agents/skills/astra-luna-orchestrator/SKILL.md`. Fully quit/reopen the host app, then start an Astra session. Check custom home locations and client skill discovery before reinstalling.
+Check that installation ended with `Installed` or `Already installed`, not only a successful dry run. The expected files are `~/.agents/skills/astra-luna-orchestrator/SKILL.md` and `~/.agents/skills/astra-sol-orchestrator/SKILL.md`. Fully quit/reopen the host app, then start an Astra session. Check custom home locations and client skill discovery before reinstalling.
 
 ## Worker role is unavailable
 
@@ -27,9 +27,10 @@ This protects later edits, including changes to the shared personal AGENTS file.
 
 Provider usage and real task outcomes determine cost and quality. Offline tests validate installation and planning helpers, not the performance of either model. Session metadata is model-selection evidence; a worker's self-description is not.
 
-## Luna is visible but delegation is unavailable
+## A worker is visible but delegation is unavailable
 
-Confirm the role pins `gpt-5.6-luna` and `xhigh`, that subagents are enabled, and
+Confirm the invoked skill's role pins `gpt-6-luna` at `xhigh` or `gpt-6-sol`
+at `high`, that subagents are enabled, and
 that no project, CLI, UI or managed-policy override replaces the role. Runtime
 metadata from a small useful task is the only evidence of actual child-model
 selection; a worker's self-description is not.
