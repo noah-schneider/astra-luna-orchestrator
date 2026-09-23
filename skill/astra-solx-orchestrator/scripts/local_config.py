@@ -12,10 +12,10 @@ if sys.version_info < (3, 11):
     raise SystemExit("Python 3.11+ is required. No packages or settings were changed.")
 import tomllib
 
-WORKER_MODEL = "gpt-6-luna"
-WORKER_EFFORT = "max"
-ROLE = "astra_luna_builder"
-SKILL = "astra-luna-orchestrator"
+WORKER_MODEL = "gpt-6-sol"
+WORKER_EFFORT = "xhigh"
+ROLE = "astra_solx_builder"
+SKILL = "astra-solx-orchestrator"
 
 # Keys Codex reads as scalar settings directly under [agents]. Every other key
 # there is read as an agent NAME whose value must be a role table, so a scalar

@@ -18,6 +18,7 @@ sys.dont_write_bytecode = True
 BUNDLE = Path(__file__).resolve().parent
 SKILL_SOURCE = BUNDLE / "skill" / "astra-luna-orchestrator"
 SOL_SOURCE = BUNDLE / "skill" / "astra-sol-orchestrator"
+SOLX_SOURCE = BUNDLE / "skill" / "astra-solx-orchestrator"
 sys.path.insert(0, str(SKILL_SOURCE / "scripts"))
 from local_config import SetupError, default_locations, inspect, ROLE, SKILL
 
@@ -25,6 +26,9 @@ SOL_ROLE = "astra_sol_builder"
 SOL_SKILL = "astra-sol-orchestrator"
 SOL_MODEL = "gpt-6-sol"
 SOL_EFFORT = "high"
+SOLX_ROLE = "astra_solx_builder"
+SOLX_SKILL = "astra-solx-orchestrator"
+SOLX_EFFORT = "xhigh"
 
 BEGIN = b"<!-- BEGIN astra-luna-orchestrator managed policy -->"
 END = b"<!-- END astra-luna-orchestrator managed policy -->"
@@ -87,6 +91,7 @@ def plan_changes(home: Path, codex_home: Path, report: dict, with_policy: bool, 
     for skill, source_root, role_name, model, effort, label in (
         (SKILL, SKILL_SOURCE, ROLE, report["worker_model"], report["worker_effort"], "Luna"),
         (SOL_SKILL, SOL_SOURCE, SOL_ROLE, SOL_MODEL, SOL_EFFORT, "Sol"),
+        (SOLX_SKILL, SOLX_SOURCE, SOLX_ROLE, SOL_MODEL, SOLX_EFFORT, "Sol"),
     ):
         target = home / ".agents" / "skills" / skill
         no_symlinks(target)
@@ -176,8 +181,8 @@ def undo(receipt: Path, home: Path, codex_home: Path, apply: bool) -> None:
     record = json.loads(receipt.read_text())
     if record.get("format") != 1 or record.get("status") != "installed":
         raise SetupError("This receipt does not describe an installed, undoable transaction.")
-    roots = [home / ".agents" / "skills" / name for name in (SKILL, SOL_SKILL)]
-    fixed = {codex_home / "agents" / f"{name}.toml" for name in (ROLE, SOL_ROLE)}
+    roots = [home / ".agents" / "skills" / name for name in (SKILL, SOL_SKILL, SOLX_SKILL)]
+    fixed = {codex_home / "agents" / f"{name}.toml" for name in (ROLE, SOL_ROLE, SOLX_ROLE)}
     fixed.update({codex_home / "AGENTS.md", codex_home / "AGENTS.override.md"})
     pending = []
     for entry in record["files"]:
@@ -239,6 +244,7 @@ def main() -> int:
             return 0
         report = inspect(home, codex_home, args.profile, allow_worker_root=True)
         report["additional_worker"] = {"custom_agent": SOL_ROLE, "worker_model": SOL_MODEL, "worker_effort": SOL_EFFORT}
+        report["solx_worker"] = {"custom_agent": SOLX_ROLE, "worker_model": SOL_MODEL, "worker_effort": SOLX_EFFORT}
         changes = plan_changes(home, codex_home, report, not args.no_policy, args.replace)
         print(json.dumps(report, indent=2))
         for change in changes:

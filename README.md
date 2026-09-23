@@ -4,14 +4,15 @@
 
 ![Astra + GPT-6 Luna savings placeholders](docs/assets/astra-savings-v2.svg)
 
-A pair of personal Codex skills designed to preserve Astra usage without giving up Astra's
+Three personal Codex skills designed to preserve Astra usage without giving up Astra's
 judgment. Astra stays responsible for planning, architecture, high-stakes
 decisions and final review. The selected worker takes the high-volume work:
 repository discovery, implementation, testing, debugging and routine verification.
 
-Invoke `$astra-luna-orchestrator` for `gpt-6-luna` at `xhigh`, or
-`$astra-sol-orchestrator` for `gpt-6-sol` at `high`. Each skill has a distinct
-native builder role; the installer installs both.
+Invoke `$astra-luna-orchestrator` for `gpt-6-luna` at `max`,
+`$astra-sol-orchestrator` for `gpt-6-sol` at `high`, or
+`$astra-solx-orchestrator` for `gpt-6-sol` at `xhigh`. Each skill has a distinct
+native builder role; the installer installs all three.
 
 Bring an existing plan or start with a feature request. The workflow turns it
 into coherent implementation bundles, sends those bundles to the selected worker, then returns
@@ -39,7 +40,7 @@ Astra  →  review + verify + accept or request fixes
        →  integrate + checkpoint + next task
 ```
 
-- **Native delegation:** uses `astra_luna_builder` or `astra_sol_builder`, according to the invoked skill.
+- **Native delegation:** uses `astra_luna_builder`, `astra_sol_builder`, or `astra_solx_builder`, according to the invoked skill.
 - **Coherent assignments:** one feature slice can include many edit/test/fix steps.
 - **Focused Astra root:** normally one planning batch, one dispatch, one wait, one
   batched acceptance review and one final response.
@@ -80,8 +81,8 @@ not ask for, read, store or validate API keys, and it never runs model requests.
 Do not paste credentials into assistant chat.
 
 Do **not** add or change `[agents].default_subagent_model` for this package. The
-installer creates named roles that pin `gpt-6-luna` at `xhigh` and `gpt-6-sol`
-at `high`, so unrelated subagents keep their existing defaults. The installer does
+installer creates named roles that pin `gpt-6-luna` at `max` and `gpt-6-sol`
+at `high` or `xhigh`, so unrelated subagents keep their existing defaults. The installer does
 not select your root model or rewrite `config.toml`.
 
 ## Install
@@ -136,9 +137,11 @@ For a nondefault profile, pass `--profile PROFILE` to the dry run, apply and doc
 | Location | Installed content |
 | --- | --- |
 | `~/.agents/skills/astra-luna-orchestrator/` | Skill, references, templates, doctor and plan validator |
-| `$CODEX_HOME/agents/astra_luna_builder.toml` | Native builder pinned to GPT-6 Luna at xhigh; nested agents disabled |
+| `$CODEX_HOME/agents/astra_luna_builder.toml` | Native builder pinned to GPT-6 Luna at max; nested agents disabled |
 | `~/.agents/skills/astra-sol-orchestrator/` | Sol skill with its own references, templates, doctor and plan validator |
 | `$CODEX_HOME/agents/astra_sol_builder.toml` | Native builder pinned to GPT-6 Sol at high; nested agents disabled |
+| `~/.agents/skills/astra-solx-orchestrator/` | Sol xhigh skill with its own references, templates, doctor and plan validator |
+| `$CODEX_HOME/agents/astra_solx_builder.toml` | Native builder pinned to GPT-6 Sol at xhigh; nested agents disabled |
 | `$CODEX_HOME/AGENTS.md` | A marked, scoped workflow policy block |
 | `$CODEX_HOME/astra-luna-install-backups/` | Original files and an undo receipt |
 
@@ -161,6 +164,7 @@ Replace the example plan path with your actual plan or describe the feature. You
 
 For the Sol worker, invoke `$astra-sol-orchestrator` and use its installed
 `astra_sol_builder` role.
+For Sol xhigh, invoke `$astra-solx-orchestrator` and use `astra_solx_builder`.
 
 If the session does not expose the custom role or exact worker model, do not substitute another model or launch a second CLI. Check client support and session configuration first.
 
@@ -171,6 +175,7 @@ From the repository folder:
 ```sh
 python3 -B skill/astra-luna-orchestrator/scripts/doctor.py
 python3 -B skill/astra-sol-orchestrator/scripts/doctor.py
+python3 -B skill/astra-solx-orchestrator/scripts/doctor.py
 ```
 
 The static check verifies the effective config shape, root settings and native

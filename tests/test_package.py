@@ -68,7 +68,7 @@ class SetupFixture(unittest.TestCase):
         self.assertIn(b'scoped exception', self.policy.read_bytes())
         role = tomllib.loads((self.codex / 'agents' / f'{ROLE}.toml').read_text())
         self.assertEqual(role['model'], WORKER_MODEL)
-        self.assertEqual(role['model_reasoning_effort'], 'xhigh')
+        self.assertEqual(role['model_reasoning_effort'], 'max')
         self.assertFalse(role['agents']['enabled'])
         self.assertNotIn('sandbox_mode', role)
         self.assertNotIn('model_provider', role)
@@ -76,6 +76,17 @@ class SetupFixture(unittest.TestCase):
         self.assertEqual((sol_role['model'], sol_role['model_reasoning_effort']), ('gpt-6-sol', 'high'))
         self.assertFalse(sol_role['agents']['enabled'])
         self.assertTrue((self.home / '.agents' / 'skills' / install.SOL_SKILL / 'SKILL.md').is_file())
+        solx_role = tomllib.loads((self.codex / 'agents' / f'{install.SOLX_ROLE}.toml').read_text())
+        self.assertEqual((solx_role['model'], solx_role['model_reasoning_effort']), ('gpt-6-sol', 'xhigh'))
+        self.assertFalse(solx_role['agents']['enabled'])
+        solx_skill = self.home / '.agents' / 'skills' / install.SOLX_SKILL / 'SKILL.md'
+        solx_text = solx_skill.read_text(encoding='utf-8')
+        self.assertIn('name: astra-solx-orchestrator', solx_text)
+        self.assertIn('astra_solx_builder', solx_text)
+        doctor = subprocess.run([sys.executable, str(ROOT / 'skill' / install.SOLX_SKILL / 'scripts' / 'doctor.py'),
+                                 '--home', str(self.home), '--codex-home', str(self.codex)], capture_output=True, text=True)
+        self.assertEqual(doctor.returncode, 0, doctor.stderr)
+        self.assertEqual(json.loads(doctor.stdout)['worker_effort'], 'xhigh')
         self.assertIn('No model request was made', result.stdout)
 
     def test_planned_writes_never_include_config(self):
@@ -246,7 +257,7 @@ class SetupFixture(unittest.TestCase):
         self.config.write_text(self.config.read_text() + '\n[agents]\ndefault_subagent_reasoning_effort = "medium"\n')
         original = self.config.read_bytes()
         report = self.report()
-        self.assertEqual(report['worker_effort'], 'xhigh')
+        self.assertEqual(report['worker_effort'], 'max')
         self.assertEqual(self.config.read_bytes(), original)
 
     def test_existing_foreign_content_requires_explicit_replace(self):
@@ -279,6 +290,8 @@ class SetupFixture(unittest.TestCase):
         self.assertFalse((self.home / '.agents' / 'skills' / SKILL).exists())
         self.assertFalse((self.codex / 'agents' / f'{install.SOL_ROLE}.toml').exists())
         self.assertFalse((self.home / '.agents' / 'skills' / install.SOL_SKILL).exists())
+        self.assertFalse((self.codex / 'agents' / f'{install.SOLX_ROLE}.toml').exists())
+        self.assertFalse((self.home / '.agents' / 'skills' / install.SOLX_SKILL).exists())
 
     def test_undo_preserves_subsequent_user_edits_by_refusing(self):
         receipt = self.apply()

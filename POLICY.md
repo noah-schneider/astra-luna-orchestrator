@@ -2,11 +2,13 @@
 ## Astra-led planning and delegated implementation
 
 For substantial builds, multi-file features, migrations, or refactors, load
-`$astra-luna-orchestrator` or `$astra-sol-orchestrator` before implementation.
+`$astra-luna-orchestrator`, `$astra-sol-orchestrator`, or
+`$astra-solx-orchestrator` before implementation.
 Keep GPT-6 Astra as the root planner, architect, reviewer, and integrator.
-Default to the Luna skill unless the user invokes or requests Sol.
-The Luna skill uses `astra_luna_builder` pinned to GPT-6 Luna at xhigh;
-the Sol skill uses `astra_sol_builder` pinned to GPT-6 Sol at high.
+Default to the Luna skill unless the user invokes or requests Sol or Solx.
+The Luna skill uses `astra_luna_builder` pinned to GPT-6 Luna at max;
+the Sol skill uses `astra_sol_builder` pinned to GPT-6 Sol at high;
+the Solx skill uses `astra_solx_builder` pinned to GPT-6 Sol at xhigh.
 Use one worker from the invoked skill by default; do not create an agent for
 each tiny coding step.
 Prefer this native workflow over an older external-runner skill for the same task;
